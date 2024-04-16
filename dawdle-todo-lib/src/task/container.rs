@@ -1,10 +1,14 @@
 use std::{panic::set_hook, rc::Rc, sync::Arc};
 
+use chrono::TimeDelta;
+use rusqlite::config;
 use serde::{Deserialize, Serialize};
+
+use crate::configurations::{self, Configurations, CONFIGURATIONS};
 
 use super::{
     dataCenter::{CONTAINER_LIST, TASKLIST},
-    modifiers, Priorty, Task, TaskContainer,
+    modifiers, InternalDate, Priorty, Task, TaskContainer,
 };
 
 #[derive(Serialize, Deserialize)]
@@ -18,7 +22,7 @@ struct DefaultContainer {}
 
 impl TaskContainer for OnceContainer {
     fn peek_task_inner(&self) -> Arc<Task> {
-        TASKLIST.get().unwrap().get(&self.task).unwrap().clone()
+        TASKLIST.read().unwrap().get(&self.task).unwrap().clone()
     }
 
     fn complete_current_task_once(&mut self) {
@@ -26,11 +30,14 @@ impl TaskContainer for OnceContainer {
     }
 
     fn priorty(&self) -> Priorty {
-        modifiers::simple_in_time_complete(self)
+        match modifiers::simple_in_time_complete(self) {
+            Some(p) => p,
+            None => Priorty::most_important(),
+        }
     }
 
-    fn times_remain(&self) -> usize {
-        todo!()
+    fn times_remain(&self) -> TimeDelta {
+        InternalDate::current_time() - InternalDate(self.peek_task_inner().end_date.clone())
     }
 
     fn id(&self) -> &str {
@@ -40,4 +47,8 @@ impl TaskContainer for OnceContainer {
     fn fully_completed(&self) -> bool {
         self.current_time >= self.peek_task_inner().complete_time
     }
+}
+
+impl OnceContainer {
+    pub(crate) fn init() {}
 }

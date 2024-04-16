@@ -2,19 +2,39 @@ use std::{
     env::home_dir,
     fs::{self, DirEntry, File, FileType},
     io::Read,
+    sync::Arc,
 };
 
 use clap::builder::Str;
+use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
+pub(crate) type TaskFilePath = String;
+pub(crate) type TaskFileContext = String;
+
 #[derive(Serialize, Deserialize)]
-struct Configurations {
-    sql_connection_url: Option<String>,
-    task_config_path: Option<String>,
+pub(crate) struct ConfigFilePath(pub String);
+
+lazy_static! {
+    pub(crate) static ref CONFIGURATIONS: Arc<Configurations> = Arc::new(Configurations::new());
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Configurations {
+    pub task_config_path: ConfigFilePath,
+    pub sql_connection_url: Option<String>,
+}
+
+impl Default for ConfigFilePath {
+    fn default() -> Self {
+        let mut path_buf = dirs::config_dir().expect("error on locate config dir");
+        path_buf.push("dawdle_todo");
+        Self(path_buf.to_string_lossy().to_string())
+    }
 }
 
 impl Configurations {
-    pub fn new() -> Self {
+    fn new() -> Self {
         toml::from_str(read_config_at("", "config.toml").unwrap().as_str())
             .expect("error config file")
     }
@@ -31,9 +51,9 @@ pub(crate) fn save_to(path: &str, json: &str) {
     std::fs::write(path, json);
 }
 
-pub(crate) fn get_task_config_at<FM, R>(s: &str, f: FM) -> Vec<R>
+pub(crate) fn get_configs_at<FM, R>(s: &str, f: FM) -> Vec<R>
 where
-    FM: FnMut((String, String)) -> R,
+    FM: FnMut((TaskFilePath, TaskFileContext)) -> R,
 {
     read_configs_at(s)
         .flat_map(|dir| match dir {
@@ -60,7 +80,7 @@ where
         .collect()
 }
 
-fn solve_dir(dir: DirEntry, ret: &mut Vec<(String, String)>) {
+fn solve_dir(dir: DirEntry, ret: &mut Vec<(TaskFilePath, TaskFileContext)>) {
     std::fs::read_dir(dir.path())
         .unwrap()
         .for_each(|f| match f {
