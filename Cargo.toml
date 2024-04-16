@@ -1,0 +1,7 @@
+[package]
+name = "dawdle-todo-backend"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dawdle-todo-lib ={ path = "./dawdle-todo-lib"}
