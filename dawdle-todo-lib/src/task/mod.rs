@@ -1,5 +1,5 @@
 mod container;
-mod dataCenter;
+mod data_center;
 mod modifiers;
 use std::{ops::Sub, sync::Arc};
 
@@ -15,7 +15,7 @@ pub(crate) struct Priorty(usize);
 pub(crate) struct InternalDate(toml::value::Datetime);
 
 pub(crate) fn init() {
-    dataCenter::init()
+    data_center::init()
 }
 
 #[derive(Serialize, Deserialize)]
@@ -27,7 +27,7 @@ pub(crate) struct Task {
     end_date: Datetime,
 }
 
-pub(crate) trait TaskContainer: Sync + Send {
+pub(crate) trait TaskContainer: Sync + Send + Deserialize + Serialize {
     fn id(&self) -> &str;
     fn peek_task_inner(&self) -> Arc<Task>; //考虑实现为iter?
     fn complete_current_task_once(&mut self);
