@@ -10,7 +10,7 @@ use clap::builder::Str;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
-use crate::task::{Task, TaskContainer};
+use crate::data_center::task::{Task, TaskContainer};
 
 pub(crate) type TaskFilePath = String;
 pub(crate) type TaskFileContext = String;
@@ -28,11 +28,11 @@ pub struct Configurations {
 #[derive(Serialize, Deserialize)]
 pub(crate) struct TaskConfigRoot {
     pub tasks: Vec<Task>,
-    pub defined_containers: HashMap<String, TaskContainer>,
+    pub defined_containers: HashMap<String, String>,
 }
 
 impl Configurations {
     fn new(input: &str) -> Self {
-        serde_json::from_str(&input)
+        serde_json::from_str(&input).unwrap()
     }
 }

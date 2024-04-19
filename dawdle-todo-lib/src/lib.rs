@@ -2,9 +2,11 @@
 
 use std::{collections::HashMap, ops};
 
+use data_center::TaskDataCenter;
+
 mod configurations;
+mod data_center;
 mod database;
-mod task;
 
 #[macro_use]
 extern crate diesel;

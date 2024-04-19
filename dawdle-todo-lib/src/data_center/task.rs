@@ -1,33 +1,27 @@
-mod container;
-mod data_center;
-mod modifiers;
 use std::{ops::Sub, sync::Arc};
 
 use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use toml::value::Datetime;
 
-extern crate chrono;
-extern crate serde;
-
 #[derive(PartialEq, Serialize, Deserialize, Clone)]
 pub(crate) struct Priorty(usize);
 pub(crate) struct InternalDate(toml::value::Datetime);
 
-pub(crate) fn init() {
-    data_center::init()
-}
+pub(crate) fn init() {}
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct Task {
-    id: String,
+    pub id: String,
     init_priorty: Priorty,
     complete_time: usize,
     begin_date: Datetime,
     end_date: Datetime,
 }
 
-pub(crate) trait TaskContainer: Sync + Send + Deserialize + Serialize {
+pub(crate) trait TaskContainer:
+    Sized + Sync + Send + for<'a> Deserialize<'a> + Serialize
+{
     fn id(&self) -> &str;
     fn peek_task_inner(&self) -> Arc<Task>; //考虑实现为iter?
     fn complete_current_task_once(&mut self);
