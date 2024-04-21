@@ -5,8 +5,9 @@ edition = "2021"
 
 [dependencies]
 chrono = {version = "0.4.37",features = ["rkyv"]}
+mongodb = "2.8.2"
 clap = "4.5.4"
-diesel = { version = "2.1.5", features = ["postgres"] }
+# diesel = { version = "2.1.5", features = ["mongodb","chrono"] }
 dirs = "5.0.1"
 lazy-init = "0.5.1"
 lazy_static = "1.4.0"
@@ -15,3 +16,4 @@ rusqlite = "0.31.0"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.115"
 toml = {version = "0.8.12"}
+log = "0.4.21"

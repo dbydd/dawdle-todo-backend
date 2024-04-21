@@ -10,7 +10,7 @@ use clap::builder::Str;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
-use crate::data_center::task::{Task, TaskContainer};
+use crate::data_center::task::Task;
 
 pub(crate) type TaskFilePath = String;
 pub(crate) type TaskFileContext = String;
@@ -27,6 +27,7 @@ pub struct Configurations {
 
 #[derive(Serialize, Deserialize)]
 pub(crate) struct TaskConfigRoot {
+    pub id: String,
     pub tasks: Vec<Task>,
     pub defined_containers: HashMap<String, String>,
 }

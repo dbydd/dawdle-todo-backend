@@ -1,4 +1,4 @@
-mod container;
+pub(crate) mod container;
 mod modifiers;
 pub(crate) mod task;
 
@@ -16,7 +16,7 @@ use lazy_static::lazy_static;
 
 use crate::configurations::{self, TaskConfigRoot};
 
-use self::task::{Task, TaskContainer};
+use self::{container::TaskContainer, task::Task};
 
 pub(crate) struct TaskDataCenter {
     task_list: HashMap<String, Arc<Task>>,
@@ -24,13 +24,12 @@ pub(crate) struct TaskDataCenter {
 }
 
 impl TaskDataCenter {
-    pub(crate) fn init(config_root: TaskConfigRoot) -> Self {
-        let mut task_list = HashMap::new();
-        let mut container_list = HashMap::new();
-        config_root
-            .tasks
-            .iter_mut()
-            .for_each(move |task| task_list.insert(task.id.clone(), Arc::new(task)));
+    pub(crate) fn init(mut config_root: TaskConfigRoot) -> Self {
+        let mut task_list: HashMap<String, Arc<Task>> = HashMap::new();
+        let container_list = HashMap::new();
+        config_root.tasks.iter_mut().for_each(|task| {
+            task_list.insert(task.id.clone(), Arc::new(task.clone()));
+        });
 
         Self {
             task_list,

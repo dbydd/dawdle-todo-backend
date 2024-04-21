@@ -4,30 +4,21 @@ use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
 use toml::value::Datetime;
 
+use super::TaskDataCenter;
+
 #[derive(PartialEq, Serialize, Deserialize, Clone)]
-pub(crate) struct Priorty(usize);
-pub(crate) struct InternalDate(toml::value::Datetime);
+pub(crate) struct Priorty(pub(crate) usize);
+pub(crate) struct InternalDate(pub(crate) toml::value::Datetime);
 
 pub(crate) fn init() {}
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub(crate) struct Task {
     pub id: String,
-    init_priorty: Priorty,
-    complete_time: usize,
-    begin_date: Datetime,
-    end_date: Datetime,
-}
-
-pub(crate) trait TaskContainer:
-    Sized + Sync + Send + for<'a> Deserialize<'a> + Serialize
-{
-    fn id(&self) -> &str;
-    fn peek_task_inner(&self) -> Arc<Task>; //考虑实现为iter?
-    fn complete_current_task_once(&mut self);
-    fn fully_completed(&self) -> bool;
-    fn priorty(&self) -> Priorty;
-    fn times_remain(&self) -> TimeDelta;
+    pub init_priorty: Priorty,
+    pub complete_time: usize,
+    pub begin_date: Datetime,
+    pub end_date: Datetime,
 }
 
 impl Default for Task {
