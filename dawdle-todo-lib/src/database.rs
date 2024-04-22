@@ -1,6 +1,5 @@
 use std::{collections::HashMap, sync::Arc};
 
-use diesel::prelude::*;
 use mongodb::{
     bson::{self, Bson},
     error::Error,

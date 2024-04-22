@@ -20,7 +20,7 @@ use self::{container::TaskContainer, task::Task};
 
 pub(crate) struct TaskDataCenter {
     task_list: HashMap<String, Arc<Task>>,
-    container_list: HashMap<String, Arc<dyn TaskContainer>>,
+    container_list: HashMap<String, Arc<RwLock<dyn TaskContainer>>>,
 }
 
 impl TaskDataCenter {

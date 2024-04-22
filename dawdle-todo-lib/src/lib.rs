@@ -1,4 +1,5 @@
 #![feature(fs_try_exists)]
+#![feature(isqrt)]
 
 use std::{
     collections::{hash_map, HashMap},

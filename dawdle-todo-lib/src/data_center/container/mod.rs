@@ -1,3 +1,4 @@
+mod basic_priorty_queue;
 mod once;
 use std::{panic::set_hook, rc::Rc, sync::Arc};
 

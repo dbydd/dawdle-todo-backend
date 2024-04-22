@@ -1,4 +1,7 @@
-use std::{ops::Sub, sync::Arc};
+use std::{
+    ops::{Mul, Sub},
+    sync::Arc,
+};
 
 use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
@@ -105,5 +108,13 @@ impl Sub<InternalDate> for InternalDate {
 
     fn sub(self, rhs: InternalDate) -> TimeDelta {
         (DateTime::from(rhs) - DateTime::from(self))
+    }
+}
+
+impl Mul<Priorty> for Priorty {
+    type Output = Priorty;
+
+    fn mul(self, rhs: Priorty) -> Self::Output {
+        Priorty((self.0 * rhs.0).isqrt())
     }
 }
