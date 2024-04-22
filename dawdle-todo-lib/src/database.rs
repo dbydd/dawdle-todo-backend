@@ -1,4 +1,7 @@
-use std::{collections::HashMap, sync::Arc};
+use std::{
+    collections::HashMap,
+    sync::{Arc, RwLock},
+};
 
 use mongodb::{
     bson::{self, Bson},
@@ -7,7 +10,7 @@ use mongodb::{
     Client,
 };
 
-use crate::data_center::container::TaskContainer;
+use crate::data_center::{container::TaskContainer, TaskDataCenter};
 struct HistoryData {
     db_connection: Client,
 }
@@ -28,12 +31,21 @@ impl HistoryData {
         }
     }
 
+    pub fn write_to_database(&mut self, task_database_id: String, database: TaskDataCenter) {
+        let db = self.db_connection.database("dawdle_todo_cache");
+        let collection = db.collection::<bson::Document>(&task_database_id);
+        // bson::Document::from(database.to_json());
+        let to_bson = bson::to_bson(&database.to_json());
+        collection.insert_one(to_bson, None).await?;
+    }
+
     pub fn read_from_database(
         &mut self,
         task_database_id: String,
     ) -> HashMap<String, Arc<dyn TaskContainer>> {
         let db = self.db_connection.database("dawdle_todo_cache");
         let collection = db.collection::<bson::Document>(&task_database_id);
+
         //TODO 使用bson
         todo!()
     }

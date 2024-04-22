@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data_center::{
     modifiers,
-    task::{InternalDate, Priorty, Task},
+    task::{InternalDate, Priority, Task},
     TaskDataCenter,
 };
 
@@ -21,13 +21,13 @@ use super::{once::OnceContainer, TaskContainer};
 // struct SingleTask(OnceContainer);
 
 #[derive(Serialize, Deserialize)]
-pub(crate) struct BasicPriortyContainer {
+pub(crate) struct BasicPriorityContainer {
     id: String,
     task_queue: Vec<String>,
-    init_prioirty: Priorty,
+    init_priority: Priority,
 }
 
-impl BasicPriortyContainer {
+impl BasicPriorityContainer {
     fn to_task_objects(&self, data_center: &TaskDataCenter) -> Vec<Arc<RwLock<dyn TaskContainer>>> {
         self.task_queue
             .iter()
@@ -49,7 +49,7 @@ impl BasicPriortyContainer {
     ) -> Arc<RwLock<dyn TaskContainer>> {
         self.to_task_objects(data_center)
             .iter()
-            .map(|a| (a.read().unwrap().priorty(data_center), a))
+            .map(|a| (a.read().unwrap().priority(data_center), a))
             .max_by(|a, b| a.0.partial_cmp(&b.0).unwrap())
             .unwrap()
             .1
@@ -57,7 +57,7 @@ impl BasicPriortyContainer {
     }
 }
 
-impl TaskContainer for BasicPriortyContainer {
+impl TaskContainer for BasicPriorityContainer {
     fn id(&self) -> &str {
         &self.id
     }
@@ -80,13 +80,13 @@ impl TaskContainer for BasicPriortyContainer {
         self.all_completed(center)
     }
 
-    fn priorty(&self, center: &TaskDataCenter) -> Priorty {
-        self.init_prioirty.clone()
+    fn priority(&self, center: &TaskDataCenter) -> Priority {
+        self.init_priority.clone()
             * self
                 .pop_most_important(center)
                 .read()
                 .unwrap()
-                .priorty(center)
+                .priority(center)
     }
 
     fn times_remain(&self, center: &TaskDataCenter) -> TimeDelta {
@@ -94,5 +94,9 @@ impl TaskContainer for BasicPriortyContainer {
             .read()
             .unwrap()
             .times_remain(center)
+    }
+
+    fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
+        None
     }
 }

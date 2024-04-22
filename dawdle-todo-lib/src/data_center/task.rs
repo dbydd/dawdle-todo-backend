@@ -10,7 +10,7 @@ use toml::value::Datetime;
 use super::TaskDataCenter;
 
 #[derive(PartialEq, Serialize, Deserialize, Clone)]
-pub(crate) struct Priorty(pub(crate) usize);
+pub(crate) struct Priority(pub(crate) usize);
 pub(crate) struct InternalDate(pub(crate) toml::value::Datetime);
 
 pub(crate) fn init() {}
@@ -18,7 +18,7 @@ pub(crate) fn init() {}
 #[derive(Serialize, Deserialize, Clone)]
 pub(crate) struct Task {
     pub id: String,
-    pub init_priorty: Priorty,
+    pub init_priority: Priority,
     pub complete_time: usize,
     pub begin_date: Datetime,
     pub end_date: Datetime,
@@ -27,8 +27,8 @@ pub(crate) struct Task {
 impl Default for Task {
     fn default() -> Self {
         Self {
-            id: "error_occured".to_owned(),
-            init_priorty: Priorty::most_important(),
+            id: "error_occurred".to_owned(),
+            init_priority: Priority::most_important(),
             complete_time: Default::default(),
             begin_date: Datetime {
                 date: Some(toml::value::Date {
@@ -52,7 +52,7 @@ impl Default for Task {
     }
 }
 
-impl PartialOrd for Priorty {
+impl PartialOrd for Priority {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(match self.0.cmp(&other.0) {
             std::cmp::Ordering::Less => std::cmp::Ordering::Greater,
@@ -62,9 +62,9 @@ impl PartialOrd for Priorty {
     }
 }
 
-impl Priorty {
+impl Priority {
     pub(crate) fn most_important() -> Self {
-        Priorty(usize::min_value())
+        Priority(usize::min_value())
     }
 }
 
@@ -111,10 +111,10 @@ impl Sub<InternalDate> for InternalDate {
     }
 }
 
-impl Mul<Priorty> for Priorty {
-    type Output = Priorty;
+impl Mul<Priority> for Priority {
+    type Output = Priority;
 
-    fn mul(self, rhs: Priorty) -> Self::Output {
-        Priorty((self.0 * rhs.0).isqrt())
+    fn mul(self, rhs: Priority) -> Self::Output {
+        Priority((self.0 * rhs.0).isqrt())
     }
 }

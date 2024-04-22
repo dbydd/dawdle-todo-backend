@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::data_center::{
     modifiers,
-    task::{InternalDate, Priorty, Task},
+    task::{InternalDate, Priority, Task},
     TaskDataCenter,
 };
 
@@ -35,15 +35,19 @@ impl TaskContainer for OnceContainer {
         self.current_time >= self.peek_task_inner(center).complete_time
     }
 
-    fn priorty(&self, center: &TaskDataCenter) -> Priorty {
+    fn priority(&self, center: &TaskDataCenter) -> Priority {
         match modifiers::simple_in_time_complete(self, center) {
             Some(p) => p,
-            None => Priorty::most_important(),
+            None => Priority::most_important(),
         }
     }
 
     fn times_remain(&self, center: &TaskDataCenter) -> TimeDelta {
         InternalDate::current_time() - InternalDate(self.peek_task_inner(center).end_date.clone())
+    }
+
+    fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
+        serde_json::to_string(self).ok()
     }
 }
 

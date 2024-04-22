@@ -8,11 +8,14 @@ extern crate serde;
 use std::{
     cell::OnceCell,
     collections::HashMap,
+    ops::Deref,
     rc::Rc,
     sync::{Arc, OnceLock, RwLock},
 };
 
 use lazy_static::lazy_static;
+use mongodb::bson::serde_helpers;
+use serde_json::{json, Value};
 
 use crate::configurations::{self, TaskConfigRoot};
 
@@ -35,5 +38,29 @@ impl TaskDataCenter {
             task_list,
             container_list,
         }
+    }
+
+    pub(crate) fn to_json(&self) -> Value {
+        let collect: Vec<Task> = self
+            .task_list
+            .values()
+            .map(|t| {
+                let arc = t.clone().deref().clone();
+                arc
+            })
+            .collect();
+        let task_list = serde_json::to_string(&collect).unwrap();
+        let once_containers: Vec<String> = self
+            .container_list
+            .values()
+            .map(|c| c.read().unwrap().to_json(self))
+            .filter(|o| o.is_some())
+            .map(Option::unwrap)
+            .collect();
+
+        json!({
+            "task_list": task_list,
+            "once_containers":once_containers
+        })
     }
 }
