@@ -49,8 +49,7 @@ impl TaskDataCenter {
         let once_containers: Vec<String> = self
             .container_list
             .values()
-            .map(|c| c.read().unwrap().to_json(self))
-            .flatten()
+            .filter_map(|c| c.read().unwrap().to_json(self))
             .collect();
 
         json!({
