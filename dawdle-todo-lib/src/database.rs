@@ -1,13 +1,16 @@
-use crate::data_center::{container::TaskContainer, TaskDataCenter};
+use crate::{
+    configurations::Configurations,
+    data_center::{container::TaskContainer, TaskDataCenter},
+};
 use rusty_leveldb::{compressor, CompressorId, Options, DB};
 use serde_json::Value;
 use std::{collections::HashMap, sync::Arc};
-struct HistoryData {
+pub struct HistoryData {
     db_connection: DB,
 }
 
 impl HistoryData {
-    pub async fn new(path: &str) -> Self {
+    pub fn new(config: &Configurations) -> Self {
         Self {
             // db_connection: Client::with_options({
             //     {
@@ -23,7 +26,7 @@ impl HistoryData {
             db_connection: {
                 let mut options = Options::default();
                 options.compressor = compressor::SnappyCompressor::ID;
-                DB::open(path, options).unwrap()
+                DB::open(config.database_connection_path.as_ref().unwrap(), options).unwrap()
             },
         }
     }

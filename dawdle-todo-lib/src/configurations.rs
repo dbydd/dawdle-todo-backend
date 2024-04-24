@@ -12,9 +12,7 @@ pub(crate) struct ConfigFilePath(pub String);
 
 #[derive(Serialize, Deserialize)]
 pub struct Configurations {
-    pub task_config_path: ConfigFilePath,
-    pub sql_connection_url: Option<String>,
-    pub config_root_container: Vec<TaskConfigRoot>,
+    pub database_connection_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
