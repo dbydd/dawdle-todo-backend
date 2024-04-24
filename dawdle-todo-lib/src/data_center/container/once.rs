@@ -1,7 +1,6 @@
 use std::{cmp, sync::Arc};
 
 use chrono::TimeDelta;
-use rusqlite::types::Type;
 use serde::{Deserialize, Serialize};
 
 use crate::data_center::{

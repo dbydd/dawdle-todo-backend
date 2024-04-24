@@ -17,6 +17,8 @@ use crate::configurations::TaskConfigRoot;
 mod configurations;
 mod data_center;
 mod database;
+#[cfg(test)]
+mod tests;
 
 #[repr(C)]
 pub struct Backend {

@@ -1,52 +1,49 @@
+use crate::data_center::{container::TaskContainer, TaskDataCenter};
+use rusty_leveldb::{compressor, Compressor, CompressorId, Options, DB};
+use serde_json::{json, Value};
 use std::{
     collections::HashMap,
     sync::{Arc, RwLock},
 };
-
-use mongodb::{
-    bson::{self, Bson},
-    error::Error,
-    options::ClientOptions,
-    Client,
-};
-
-use crate::data_center::{container::TaskContainer, TaskDataCenter};
 struct HistoryData {
-    db_connection: Client,
+    db_connection: DB,
 }
 
 impl HistoryData {
     pub async fn new(path: &str) -> Self {
         Self {
-            db_connection: Client::with_options({
-                {
-                    let mut client_options = ClientOptions::parse(path)
-                        .await
-                        .expect("err at reading database url, check config!");
-                    client_options.app_name = Some("dawdle-todo-lib".to_owned());
-                    client_options
-                }
-            })
-            .expect("connection error"),
+            // db_connection: Client::with_options({
+            //     {
+            //         let mut client_options = ClientOptions::parse(path)
+            //             .await
+            //             .expect("err at reading database url, check config!");
+            //         client_options.app_name = Some("dawdle-todo-lib".to_owned());
+            //         client_options
+            //     }
+            // })
+            // .expect("connection error"),
+            //
+            db_connection: {
+                let mut options = Options::default();
+                options.compressor = compressor::SnappyCompressor::ID;
+                DB::open(path, options).unwrap()
+            },
         }
     }
 
     pub fn write_to_database(&mut self, task_database_id: String, database: TaskDataCenter) {
-        let db = self.db_connection.database("dawdle_todo_cache");
-        let collection = db.collection::<bson::Document>(&task_database_id);
-        // bson::Document::from(database.to_json());
-        let to_bson = bson::to_bson(&database.to_json());
-        collection.insert_one(to_bson, None).await?;
+        let database_json = &database.to_json();
+        self.db_connection.put(
+            task_database_id.as_bytes(),
+            database_json.to_string().as_bytes(),
+        );
     }
 
     pub fn read_from_database(
         &mut self,
         task_database_id: String,
-    ) -> HashMap<String, Arc<dyn TaskContainer>> {
-        let db = self.db_connection.database("dawdle_todo_cache");
-        let collection = db.collection::<bson::Document>(&task_database_id);
-
-        //TODO 使用bson
+    ) -> Option<HashMap<String, Arc<dyn TaskContainer>>> {
+        // serde_json::from_str::<TaskDataCenter>(self.db_connection.get(task_database_id))
         todo!()
     }
 }
