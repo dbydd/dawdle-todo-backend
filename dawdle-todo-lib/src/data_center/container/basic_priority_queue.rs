@@ -1,6 +1,4 @@
-use std::{
-    sync::{Arc, RwLock},
-};
+use std::sync::{Arc, RwLock};
 
 use chrono::TimeDelta;
 use serde::{Deserialize, Serialize};
@@ -10,7 +8,7 @@ use crate::data_center::{
     TaskDataCenter,
 };
 
-use super::{TaskContainer};
+use super::TaskContainer;
 
 // #[derive(Serialize, Deserialize)]
 // struct SingleTask(OnceContainer);
@@ -93,5 +91,15 @@ impl TaskContainer for BasicPriorityContainer {
 
     fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
         None
+    }
+}
+
+impl BasicPriorityContainer {
+    pub(crate) fn new(id: String, queue: Vec<String>, prio: Option<Priority>) -> Self {
+        BasicPriorityContainer {
+            id: id,
+            task_queue: queue,
+            init_priority: prio.unwrap_or(Priority::most_important()),
+        }
     }
 }

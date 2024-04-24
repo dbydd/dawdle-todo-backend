@@ -13,7 +13,7 @@ use std::{
 
 use serde_json::{json, Value};
 
-use crate::configurations::{TaskConfigRoot};
+use crate::configurations::TaskConfigRoot;
 
 use self::{container::TaskContainer, task::Task};
 
@@ -29,6 +29,12 @@ impl TaskDataCenter {
         config_root.tasks.iter_mut().for_each(|task| {
             task_list.insert(task.id.clone(), Arc::new(task.clone()));
         });
+        config_root
+            .defined_containers
+            .iter_mut()
+            .for_each(|container| todo!("给container们加上反序列化功能"));
+
+        todo!();
 
         Self {
             task_list,

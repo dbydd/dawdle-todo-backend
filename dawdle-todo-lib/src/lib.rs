@@ -1,9 +1,7 @@
 #![feature(fs_try_exists)]
 #![feature(isqrt)]
 
-use std::{
-    collections::{HashMap},
-};
+use std::collections::HashMap;
 
 use data_center::TaskDataCenter;
 use log::error;
@@ -15,7 +13,7 @@ mod configurations;
 mod data_center;
 mod database;
 #[cfg(test)]
-mod tests;
+mod test_lib;
 
 #[repr(C)]
 pub struct Backend {
