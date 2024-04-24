@@ -6,17 +6,14 @@ extern crate chrono;
 extern crate serde;
 
 use std::{
-    cell::OnceCell,
     collections::HashMap,
     ops::Deref,
-    rc::Rc,
-    sync::{Arc, OnceLock, RwLock},
+    sync::{Arc, RwLock},
 };
 
-use lazy_static::lazy_static;
 use serde_json::{json, Value};
 
-use crate::configurations::{self, TaskConfigRoot};
+use crate::configurations::{TaskConfigRoot};
 
 use self::{container::TaskContainer, task::Task};
 
@@ -53,8 +50,7 @@ impl TaskDataCenter {
             .container_list
             .values()
             .map(|c| c.read().unwrap().to_json(self))
-            .filter(|o| o.is_some())
-            .map(Option::unwrap)
+            .flatten()
             .collect();
 
         json!({

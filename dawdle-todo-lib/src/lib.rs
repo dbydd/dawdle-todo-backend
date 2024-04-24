@@ -2,14 +2,11 @@
 #![feature(isqrt)]
 
 use std::{
-    collections::{hash_map, HashMap},
-    hash::Hash,
-    ops,
+    collections::{HashMap},
 };
 
 use data_center::TaskDataCenter;
 use log::error;
-use serde::{Deserialize, Serialize};
 use serde_json::Error;
 
 use crate::configurations::TaskConfigRoot;
@@ -27,7 +24,7 @@ pub struct Backend {
 
 ///
 /// json:{id:{#TaskConfigRoot},id:{#TaskConfigRoot}...}
-extern "C" fn initialize(mut json: *const String, item_count: isize) -> Backend {
+extern "C" fn initialize(json: *const String, item_count: isize) -> Backend {
     let mut hash_map = HashMap::new();
     (0..item_count)
         .map(|i| unsafe { &*(json.offset(i)) })

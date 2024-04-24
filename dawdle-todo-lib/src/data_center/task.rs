@@ -1,13 +1,11 @@
 use std::{
     ops::{Mul, Sub},
-    sync::Arc,
 };
 
-use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone, Utc};
+use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone};
 use serde::{Deserialize, Serialize};
 use toml::value::Datetime;
 
-use super::TaskDataCenter;
 
 #[derive(PartialEq, Serialize, Deserialize, Clone)]
 pub(crate) struct Priority(pub(crate) usize);
@@ -99,7 +97,7 @@ impl From<InternalDate> for chrono::DateTime<Local> {
 
 impl InternalDate {
     pub fn current_time() -> Self {
-        return InternalDate::from(chrono::Local::now());
+        InternalDate::from(chrono::Local::now())
     }
 }
 
@@ -107,7 +105,7 @@ impl Sub<InternalDate> for InternalDate {
     type Output = TimeDelta;
 
     fn sub(self, rhs: InternalDate) -> TimeDelta {
-        (DateTime::from(rhs) - DateTime::from(self))
+        DateTime::from(rhs) - DateTime::from(self)
     }
 }
 

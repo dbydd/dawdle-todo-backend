@@ -1,13 +1,7 @@
 use std::{
     collections::HashMap,
-    env::home_dir,
-    fs::{self, DirEntry, File, FileType},
-    io::Read,
-    sync::Arc,
 };
 
-use clap::builder::Str;
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 
 use crate::data_center::task::Task;
@@ -34,6 +28,6 @@ pub(crate) struct TaskConfigRoot {
 
 impl Configurations {
     fn new(input: &str) -> Self {
-        serde_json::from_str(&input).unwrap()
+        serde_json::from_str(input).unwrap()
     }
 }

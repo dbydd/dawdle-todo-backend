@@ -1,9 +1,8 @@
 use crate::data_center::{container::TaskContainer, TaskDataCenter};
-use rusty_leveldb::{compressor, Compressor, CompressorId, Options, DB};
-use serde_json::{json, Value};
+use rusty_leveldb::{compressor, CompressorId, Options, DB};
 use std::{
     collections::HashMap,
-    sync::{Arc, RwLock},
+    sync::{Arc},
 };
 struct HistoryData {
     db_connection: DB,

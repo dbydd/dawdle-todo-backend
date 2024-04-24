@@ -1,4 +1,4 @@
-use std::{cmp, sync::Arc};
+use std::{sync::Arc};
 
 use chrono::TimeDelta;
 use serde::{Deserialize, Serialize};
@@ -42,7 +42,7 @@ impl TaskContainer for OnceContainer {
     }
 
     fn times_remain(&self, center: &TaskDataCenter) -> TimeDelta {
-        InternalDate::current_time() - InternalDate(self.peek_task_inner(center).end_date.clone())
+        InternalDate::current_time() - InternalDate(self.peek_task_inner(center).end_date)
     }
 
     fn to_json(&self, center: &TaskDataCenter) -> Option<String> {

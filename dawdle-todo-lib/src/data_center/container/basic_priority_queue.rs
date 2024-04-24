@@ -1,7 +1,4 @@
 use std::{
-    borrow::BorrowMut,
-    cmp,
-    collections::BinaryHeap,
     sync::{Arc, RwLock},
 };
 
@@ -9,12 +6,11 @@ use chrono::TimeDelta;
 use serde::{Deserialize, Serialize};
 
 use crate::data_center::{
-    modifiers,
-    task::{InternalDate, Priority, Task},
+    task::{Priority, Task},
     TaskDataCenter,
 };
 
-use super::{once::OnceContainer, TaskContainer};
+use super::{TaskContainer};
 
 // #[derive(Serialize, Deserialize)]
 // struct SingleTask(OnceContainer);
@@ -69,7 +65,7 @@ impl TaskContainer for BasicPriorityContainer {
     }
 
     fn complete_current_task_once(&mut self, center: &mut TaskDataCenter) {
-        self.pop_most_important(&center)
+        self.pop_most_important(center)
             .write()
             .unwrap()
             .complete_current_task_once(center)
