@@ -21,6 +21,7 @@ pub struct Configurations {
 pub(crate) struct TaskConfigRoot {
     pub id: String,
     pub tasks: Vec<Task>,
+    ///defined_containers:Hashmap<id,json>
     pub defined_containers: HashMap<String, String>,
 }
 

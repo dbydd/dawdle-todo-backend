@@ -1,7 +1,7 @@
-mod basic_priority_queue;
-mod once;
+pub(super) mod basic_priority_queue;
+pub(super) mod once;
 #[cfg(test)]
-mod test_container;
+mod tests_containers;
 
 use std::sync::Arc;
 
@@ -29,17 +29,23 @@ pub(crate) trait TaskContainer {
     fn to_json(&self, center: &TaskDataCenter) -> Option<String>;
 }
 
-impl TaskContainer {
-    pub(crate) fn get_container_info(&self, center: &TaskDataCenter) -> Value {
-        // json!(
-        //     {
-        //     id:self.id(),
-        //     task_inner:self.peek_task_inner(center)
-        // }
-        // )
-        todo!()
-    }
+pub(crate) trait FromJson {
+    type Container: TaskContainer;
+
+    fn from_json(json: Value) -> Option<Self::Container>;
 }
+
+// impl TaskContainer {
+//     pub(crate) fn get_container_info(&self, center: &TaskDataCenter) -> Value {
+//         // json!(
+//         //     {
+//         //     id:self.id(),
+//         //     task_inner:self.peek_task_inner(center)
+//         // }
+//         // )
+//         todo!()
+//     }
+// }
 
 #[derive(Serialize, Deserialize)]
 struct DefaultContainer {}

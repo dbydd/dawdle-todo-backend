@@ -1,5 +1,6 @@
 #![feature(fs_try_exists)]
 #![feature(isqrt)]
+#![allow(warnings)]
 
 use std::collections::HashMap;
 

@@ -21,10 +21,13 @@ pub(crate) struct BasicPriorityContainer {
 }
 
 impl BasicPriorityContainer {
-    fn to_task_objects(&self, data_center: &TaskDataCenter) -> Vec<Arc<RwLock<dyn TaskContainer>>> {
+    fn to_task_objects<'b>(
+        &self,
+        data_center: &TaskDataCenter,
+    ) -> Vec<Arc<RwLock<dyn TaskContainer>>> {
         self.task_queue
             .iter()
-            .map(|s| data_center.container_list.get(s))
+            .map(|s| data_center.container_list.get(&(s.clone())))
             .filter(Option::is_some)
             .map(|o| o.unwrap().clone())
             .collect()
@@ -47,6 +50,14 @@ impl BasicPriorityContainer {
             .unwrap()
             .1
             .clone()
+    }
+}
+
+impl super::FromJson for BasicPriorityContainer {
+    type Container = BasicPriorityContainer;
+
+    fn from_json(json: serde_json::Value) -> Option<Self::Container> {
+        serde_json::from_value(json).ok()
     }
 }
 

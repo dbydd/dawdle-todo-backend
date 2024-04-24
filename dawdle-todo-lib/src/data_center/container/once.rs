@@ -1,4 +1,4 @@
-use std::{sync::Arc};
+use std::sync::Arc;
 
 use chrono::TimeDelta;
 use serde::{Deserialize, Serialize};
@@ -47,6 +47,14 @@ impl TaskContainer for OnceContainer {
 
     fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
         serde_json::to_string(self).ok()
+    }
+}
+
+impl super::FromJson for OnceContainer {
+    type Container = Self;
+
+    fn from_json(json: serde_json::Value) -> Option<Self::Container> {
+        serde_json::from_value(json).ok()
     }
 }
 
