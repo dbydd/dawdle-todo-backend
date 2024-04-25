@@ -26,7 +26,7 @@ pub struct Backend {
 }
 
 ///
-/// json:{id:{#TaskConfigRoot},id:{#TaskConfigRoot}...}
+/// json:["{#TaskConfigRoot}","{#TaskConfigRoot}"...]
 extern "C" fn initialize(
     json: *const String,
     item_count: isize,

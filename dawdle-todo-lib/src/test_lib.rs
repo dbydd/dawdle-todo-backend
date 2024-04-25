@@ -1,3 +1,4 @@
+use core::panic;
 use std::{collections::HashMap, str::FromStr};
 
 use chrono::DateTime;
@@ -19,8 +20,8 @@ fn task_serialize() {
         id: "mulimomuli".to_owned(),
         init_priority: Priority(114),
         complete_time: 514,
-        begin_date: Datetime::from_str("2024-04-24"),
-        end_date: Datetime::from_str("2024-04-24"),
+        begin_date: Datetime::from_str("2024-04-24").unwrap(),
+        end_date: Datetime::from_str("2024-04-24").unwrap(),
     };
     // println!("{}", serde_json::to_string_pretty(&task).unwrap())
     assert_eq!(
@@ -47,16 +48,58 @@ fn test_task_data_center_and_config_root() {
             .map(|i| Task {
                 id: format!("task{i}").to_string(),
                 init_priority: Priority::most_important(),
-                complete_time: "114514",
-                begin_date: Datetime::from_str("2024-04-24"),
-                end_date: Datetime::from_str("2024-04-24"),
+                complete_time: 114514,
+                begin_date: Datetime::from_str("2024-04-24").unwrap(),
+                end_date: Datetime::from_str("2024-04-24").unwrap(),
             })
             .collect(),
         defined_containers: {
-            let hash_map = HashMap::new();
-            // hash_map.insert("container_a", )
-            todo!("加上标注")
+            let mut hash_map = HashMap::new();
+            (0..3)
+                .map(|i| {
+                    json!({
+                    "id": format!("task{i}"),
+                    "current_time": 0
+                    })
+                })
+                .for_each(|v| {
+                    hash_map.insert(
+                        v.get("id").unwrap().to_string().clone(),
+                        serde_json::to_string_pretty(&v).unwrap(),
+                    );
+                });
+            (0..3)
+                .map(|i| {
+                    json!({
+                    "id": format!("task{i}"),
+                    "current_time": 0
+                    })
+                })
+                .for_each(|v| {
+                    hash_map.insert(
+                        v.get("id").unwrap().to_string().clone(),
+                        serde_json::to_string_pretty(&v).unwrap(),
+                    );
+                });
+
+            hash_map.insert(
+                "container_priority_example".to_string(),
+                serde_json::to_string_pretty(&json!({
+                "id": "container_priority_example",
+                "task_queue": [
+                  "task0",
+                  "task1",
+                  "task2"
+                ],
+                "init_priority": 0}))
+                .unwrap(),
+            );
+            hash_map
         },
     };
-    example_config_root
+
+    panic!(
+        "{}",
+        serde_json::to_string_pretty(&example_config_root).unwrap()
+    )
 }
