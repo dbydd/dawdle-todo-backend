@@ -1,0 +1,44 @@
+{
+  "id": "this_is_a_example_config_of_task_group",
+  "tasks": [
+    {
+      "id": "task0",
+      "init_priority": 0,
+      "complete_time": 114514,
+      "begin_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      },
+      "end_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      }
+    },
+    {
+      "id": "task1",
+      "init_priority": 0,
+      "complete_time": 114514,
+      "begin_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      },
+      "end_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      }
+    },
+    {
+      "id": "task2",
+      "init_priority": 0,
+      "complete_time": 114514,
+      "begin_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      },
+      "end_date": {
+        "$__toml_private_datetime": "2024-04-24"
+      }
+    }
+  ],
+  "defined_containers": {
+    "basic_priority_queue_example": "{\"id\":\"basic_priority_queue_example\",\"task_queue\":[\"task0\",\"task1\",\"task2\"],\"init_priority\":0}",
+    "task1": "{\"id\":\"task1\",\"current_time\":0}",
+    "task2": "{\"id\":\"task2\",\"current_time\":0}",
+    "task0": "{\"id\":\"task0\",\"current_time\":0}"
+  }
+}
