@@ -9,6 +9,9 @@ use toml::value::Datetime;
 use crate::{
     configurations::TaskConfigRoot,
     data_center::{
+        container::{
+            basic_priority_queue::BasicPriorityContainer, once::OnceContainer, TaskContainer,
+        },
         task::{InternalDate, Priority, Task},
         TaskDataCenter,
     },
@@ -56,42 +59,20 @@ fn test_task_data_center_and_config_root() {
         defined_containers: {
             let mut hash_map = HashMap::new();
             (0..3)
-                .map(|i| {
-                    json!({
-                    "id": format!("task{i}"),
-                    "current_time": 0
-                    })
-                })
+                .map(|i| OnceContainer::new(format!("task{i}")))
                 .for_each(|v| {
-                    hash_map.insert(
-                        v.get("id").unwrap().to_string().clone(),
-                        serde_json::to_string_pretty(&v).unwrap(),
-                    );
+                    hash_map.insert(v.id().to_string(), serde_json::to_string(&v).unwrap());
                 });
-            (0..3)
-                .map(|i| {
-                    json!({
-                    "id": format!("task{i}"),
-                    "current_time": 0
-                    })
-                })
-                .for_each(|v| {
-                    hash_map.insert(
-                        v.get("id").unwrap().to_string().clone(),
-                        serde_json::to_string_pretty(&v).unwrap(),
-                    );
-                });
-
             hash_map.insert(
-                "container_priority_example".to_string(),
-                serde_json::to_string_pretty(&json!({
-                "id": "container_priority_example",
-                "task_queue": [
-                  "task0",
-                  "task1",
-                  "task2"
-                ],
-                "init_priority": 0}))
+                "basic_priority_queue_example".to_string(),
+                serde_json::to_string(&BasicPriorityContainer::new(
+                    "basic_priority_queue_example".to_string(),
+                    vec!["task0", "task1", "task2"]
+                        .iter()
+                        .map(|s| s.to_string())
+                        .collect(),
+                    None,
+                ))
                 .unwrap(),
             );
             hash_map

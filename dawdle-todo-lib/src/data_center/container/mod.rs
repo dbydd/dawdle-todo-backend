@@ -1,5 +1,5 @@
-pub(super) mod basic_priority_queue;
-pub(super) mod once;
+pub(crate) mod basic_priority_queue;
+pub(crate) mod once;
 #[cfg(test)]
 mod tests_containers;
 
