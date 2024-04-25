@@ -2,7 +2,7 @@
 #![feature(isqrt)]
 #![allow(warnings)]
 
-use std::collections::HashMap;
+use std::{collections::HashMap, ffi::CString};
 
 use configurations::Configurations;
 use data_center::TaskDataCenter;
@@ -62,13 +62,36 @@ impl Backend {
     ///{
     ///groups:[String]
     ///}
-    extern "C" fn get_all_legally_defined_groups_in_json(&self) -> String {
-        todo!()
+    extern "C" fn get_all_legally_defined_groups_in_json(&self) -> CString {
+        std::ffi::CString::new(
+            serde_json::to_string(
+                &self
+                    .data_centers
+                    .keys()
+                    .map(|s| s.to_string().clone())
+                    .collect::<Vec<String>>(),
+            )
+            .unwrap(),
+        )
+        .unwrap()
     }
 
     ///return a json
     /// *serialized crate::task::Task
-    extern "C" fn get_most_important_task_in_the_spec_group(&self, groupname: String) -> String {
-        todo!()
+    extern "C" fn get_most_important_task_in_the_spec_group(&self, groupname: &str) -> CString {
+        CString::new(
+            self.data_centers
+                .get(groupname)
+                .map(|t| t.solve_task_containers().read().unwrap().peek_task_inner(t))
+                .map(|a| {
+                    serde_json::to_string({
+                        let task = a.as_ref();
+                        &task.clone()
+                    })
+                    .unwrap()
+                })
+                .unwrap_or("".to_string()),
+        )
+        .unwrap()
     }
 }

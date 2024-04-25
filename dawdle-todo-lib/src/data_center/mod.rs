@@ -1,4 +1,6 @@
 pub(crate) mod container;
+#[cfg(test)]
+mod tests_data_center;
 #[macro_use]
 mod marcos;
 mod modifiers;
@@ -8,7 +10,7 @@ extern crate chrono;
 extern crate serde;
 
 use std::{
-    collections::HashMap,
+    collections::{HashMap, HashSet},
     hash::Hash,
     ops::{Add, Deref},
     sync::{Arc, RwLock},
@@ -18,7 +20,10 @@ use serde_json::{json, Value};
 
 use crate::{configurations::TaskConfigRoot, data_center::container::FromJson};
 
-use self::{container::TaskContainer, task::Task};
+use self::{
+    container::TaskContainer,
+    task::{Priority, Task},
+};
 
 type TaskContainerList = HashMap<String, Arc<RwLock<dyn TaskContainer>>>;
 type TaskList = HashMap<String, Arc<Task>>;
@@ -58,6 +63,21 @@ where
 }
 
 impl TaskDataCenter {
+    pub(crate) fn solve_task_containers(&self) -> Arc<RwLock<dyn TaskContainer>> {
+        let try_collect: HashSet<String> = self
+            .container_list
+            .values()
+            .flat_map(|v| v.read().unwrap().filters())
+            .collect();
+        self.container_list
+            .iter()
+            .skip_while(|pair| try_collect.contains(pair.0))
+            .map(|p| p.1)
+            .max_by_key(|a| a.read().unwrap().priority(self))
+            .unwrap()
+            .clone()
+    }
+
     pub(crate) fn init(mut config_root: TaskConfigRoot) -> Self {
         let mut task_list: HashMap<String, Arc<Task>> = HashMap::new();
         let mut container_list = HashMap::new();

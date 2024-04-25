@@ -103,6 +103,10 @@ impl TaskContainer for BasicPriorityContainer {
     fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
         None
     }
+
+    fn filters(&self) -> Vec<String> {
+        self.task_queue.clone()
+    }
 }
 
 impl BasicPriorityContainer {

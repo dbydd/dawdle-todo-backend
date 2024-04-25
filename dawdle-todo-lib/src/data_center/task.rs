@@ -1,13 +1,10 @@
-use std::{
-    ops::{Mul, Sub},
-};
+use std::ops::{Mul, Sub};
 
 use chrono::{DateTime, Datelike, Local, TimeDelta, TimeZone};
 use serde::{Deserialize, Serialize};
 use toml::value::Datetime;
 
-
-#[derive(PartialEq, Serialize, Deserialize, Clone)]
+#[derive(Eq, Ord, Serialize, Deserialize, Clone)]
 pub(crate) struct Priority(pub(crate) usize);
 pub(crate) struct InternalDate(pub(crate) toml::value::Datetime);
 
@@ -57,6 +54,18 @@ impl PartialOrd for Priority {
             std::cmp::Ordering::Equal => std::cmp::Ordering::Equal,
             std::cmp::Ordering::Greater => std::cmp::Ordering::Less,
         })
+    }
+}
+
+// impl Ord for Priority {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.partial_cmp(other).unwrap()
+//     }
+// }
+
+impl PartialEq for Priority {
+    fn eq(&self, other: &Self) -> bool {
+        self.partial_cmp(other).unwrap().is_eq()
     }
 }
 

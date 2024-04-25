@@ -48,6 +48,10 @@ impl TaskContainer for OnceContainer {
     fn to_json(&self, center: &TaskDataCenter) -> Option<String> {
         serde_json::to_string(self).ok()
     }
+
+    fn filters(&self) -> Vec<String> {
+        Vec::new()
+    }
 }
 
 impl super::FromJson for OnceContainer {

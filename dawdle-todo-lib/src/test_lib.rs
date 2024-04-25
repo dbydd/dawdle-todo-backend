@@ -79,8 +79,5 @@ fn test_task_data_center_and_config_root() {
         },
     };
 
-    panic!(
-        "{}",
-        serde_json::to_string_pretty(&example_config_root).unwrap()
-    )
+    // panic!()
 }

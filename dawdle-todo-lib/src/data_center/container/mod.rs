@@ -27,6 +27,7 @@ pub(crate) trait TaskContainer {
     fn priority(&self, center: &TaskDataCenter) -> Priority;
     fn times_remain(&self, center: &TaskDataCenter) -> TimeDelta;
     fn to_json(&self, center: &TaskDataCenter) -> Option<String>;
+    fn filters(&self) -> Vec<String>;
 }
 
 pub(crate) trait FromJson {
